@@ -25,7 +25,6 @@ namespace TaskManagementSystem.Models.Models
         public Team AssignedToTeam { get; set; }
 
         public string CreatedByUserId { get; set; }
-        public User CreatedByUser { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Attachment> Attachments { get; set; }
