@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TaskManagementSystem.Models;
+using TaskManagementSystem.Web.Models;
 
-namespace TaskManagementSystem.Controllers
+namespace TaskManagementSystem.Web.Controllers
 {
     public class HomeController : Controller
     {
@@ -15,7 +15,7 @@ namespace TaskManagementSystem.Controllers
 
         public IActionResult Index()
         {
-            return View("login.cshtml");
+            return View();
         }
 
         public IActionResult Privacy()

@@ -1,23 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using global::TaskManagementSystem.Data;
+using global::TaskManagementSystem.Models.Dtos;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.Data;
-using TaskManagementSystem.Models.Dtos;
-using static TaskManagementSystem.Models.Const.Enums;
+using static global::TaskManagementSystem.Models.Const.Enums;
 using Task = TaskManagementSystem.Models.Models.Task;
 using TaskStatus = TaskManagementSystem.Models.Const.Enums.TaskStatus;
 
 
-namespace TaskManagementSystem.Controllers;
+namespace TaskManagementSystem.Web.Controllers;
 
-public class TasksController : Controller
+public class TasksController(ApplicationDbContext _context) : Controller
 {
-    private readonly ApplicationDbContext _context;
-
-    public TasksController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
 
     // GET: Tasks
     public async Task<IActionResult> Index()
@@ -119,7 +113,7 @@ public class TasksController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id,TaskDto task)
+    public async Task<IActionResult> Edit(int id, TaskDto task)
     {
         if (id != task.TaskId)
         {
