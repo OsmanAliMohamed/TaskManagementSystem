@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data;
+using TaskManagementSystem.Models.Interfaces;
+using TaskManagmentSystem.Business;
+using TaskManagmentSystem.Business.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,7 +12,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
