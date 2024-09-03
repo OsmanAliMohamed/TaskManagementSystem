@@ -196,6 +196,9 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TaskId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
@@ -206,6 +209,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasKey("AuditTrailId");
 
                     b.HasIndex("TaskId");
+
+                    b.HasIndex("TaskId1");
 
                     b.HasIndex("UserId");
 
@@ -226,6 +231,9 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TaskId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -237,6 +245,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasKey("CommentId");
 
                     b.HasIndex("TaskId");
+
+                    b.HasIndex("TaskId1");
 
                     b.HasIndex("UserId");
 
@@ -479,10 +489,14 @@ namespace TaskManagementSystem.Data.Migrations
             modelBuilder.Entity("TaskManagementSystem.Models.Models.AuditTrail", b =>
                 {
                     b.HasOne("TaskManagementSystem.Models.Models.Task", "Task")
-                        .WithMany("AuditTrail")
+                        .WithMany()
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("TaskManagementSystem.Models.Models.Task", null)
+                        .WithMany("AuditTrail")
+                        .HasForeignKey("TaskId1");
 
                     b.HasOne("TaskManagementSystem.Models.Models.User", "User")
                         .WithMany()
@@ -498,10 +512,14 @@ namespace TaskManagementSystem.Data.Migrations
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Comment", b =>
                 {
                     b.HasOne("TaskManagementSystem.Models.Models.Task", "Task")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("TaskManagementSystem.Models.Models.Task", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId1");
 
                     b.HasOne("TaskManagementSystem.Models.Models.User", "User")
                         .WithMany("Comments")

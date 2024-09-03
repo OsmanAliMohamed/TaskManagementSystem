@@ -258,7 +258,8 @@ namespace TaskManagementSystem.Data.Migrations
                     Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TaskId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -274,7 +275,12 @@ namespace TaskManagementSystem.Data.Migrations
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "TaskId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AuditTrails_Tasks_TaskId1",
+                        column: x => x.TaskId1,
+                        principalTable: "Tasks",
+                        principalColumn: "TaskId");
                 });
 
             migrationBuilder.CreateTable(
@@ -286,7 +292,8 @@ namespace TaskManagementSystem.Data.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TaskId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -302,7 +309,12 @@ namespace TaskManagementSystem.Data.Migrations
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "TaskId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comments_Tasks_TaskId1",
+                        column: x => x.TaskId1,
+                        principalTable: "Tasks",
+                        principalColumn: "TaskId");
                 });
 
             migrationBuilder.CreateTable(
@@ -379,6 +391,11 @@ namespace TaskManagementSystem.Data.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AuditTrails_TaskId1",
+                table: "AuditTrails",
+                column: "TaskId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AuditTrails_UserId",
                 table: "AuditTrails",
                 column: "UserId");
@@ -387,6 +404,11 @@ namespace TaskManagementSystem.Data.Migrations
                 name: "IX_Comments_TaskId",
                 table: "Comments",
                 column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_TaskId1",
+                table: "Comments",
+                column: "TaskId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
