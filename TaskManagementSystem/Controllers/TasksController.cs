@@ -138,7 +138,7 @@ public class TasksController : Controller
             {
                 Task _task = MappingTask(task);
                 _context.Add(_task);
-                _context.Update(task);
+                _context.Update(_task);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
