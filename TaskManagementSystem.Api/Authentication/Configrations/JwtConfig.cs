@@ -3,4 +3,5 @@
 public class JwtConfig
 {
     public string secret { get; set; }
+    public TimeSpan ExpireTimeFrame { get; set; }
 }

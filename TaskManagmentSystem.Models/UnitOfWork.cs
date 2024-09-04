@@ -23,6 +23,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 
     public IBaseRepository<User> User { get; private set; }
 
+    public IBaseRepository<RefreshToken> RefreshToken { get; private set; }
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -34,11 +35,12 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         TaskDependency = new BaseRepository<TaskDependency>(_context);
         Team = new BaseRepository<Team>(_context);
         User = new BaseRepository<User>(_context);
+        RefreshToken = new BaseRepository<RefreshToken>(_context);
     }
 
-    public async void CompleteAsync()
+    public void CompleteAsync()
     {
-        await _context.SaveChangesAsync();
+        _context.SaveChangesAsync();
     }
     public void Dispose()
     {

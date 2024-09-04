@@ -12,6 +12,7 @@ public interface IUnitOfWork
     IBaseRepository <TaskDependency> TaskDependency { get; }
     IBaseRepository<Team> Team { get; }
     IBaseRepository<User> User { get; }
+    IBaseRepository<RefreshToken> RefreshToken { get; }
 
     void CompleteAsync(); 
 
