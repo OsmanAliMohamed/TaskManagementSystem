@@ -15,7 +15,7 @@ namespace TaskManagementSystem.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("login.cshtml");
         }
 
         public IActionResult Privacy()
