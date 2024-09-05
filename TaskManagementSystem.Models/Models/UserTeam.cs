@@ -6,5 +6,4 @@ public class UserTeam
 {
     public string Id { get; set; }
     public int TeamId { get; set; }
-
 }

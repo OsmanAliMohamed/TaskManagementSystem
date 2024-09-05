@@ -161,7 +161,13 @@ public class UserController
     [HttpGet("Id")]
     public async Task<IActionResult> GetById(string Id)
     {
-        return Ok(await unitOfWork.User.FindAsync(user => user.Id == Id,x => x.Teams));
+        var user = await unitOfWork.User.FindAsync(user => user.Id == Id);
+        if (user != null)
+        {
+            var res = await unitOfWork.UserTeam.FindAsync(x => x.Id == Id);
+            user.FirstOrDefault().Teams = res.ToList();
+        }
+        return Ok(user);
     }
 
     /*[Authorize(Roles = "TeamLeader")]*/
@@ -173,11 +179,13 @@ public class UserController
         if (isExist != null && isTeamExist != null)
         {
             await unitOfWork.UserTeam.AddAsync(new UserTeam { Id = assignUserToTeamRequest.UserId, TeamId = assignUserToTeamRequest.TeamId });
+            unitOfWork.CompleteAsync();
         }
         else
         {
             return BadRequest("Invalid payload");
         }
+
         return Ok($"This user {isExist.Id} is assigned to this team {isTeamExist.TeamId}");
     }
 

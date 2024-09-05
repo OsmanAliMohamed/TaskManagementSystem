@@ -47,6 +47,26 @@ namespace TaskManagementSystem.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "66fab0be-5970-4ba1-8a6f-d45f8269c8d0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "d3224902-27b4-400a-a7dc-851c4f5db613",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "efd39979-efda-49fc-8796-a8c1af646cfb",
+                            Name = "TeamLeader",
+                            NormalizedName = "TEAMLEADER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -464,24 +484,16 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id", "TeamId");
-
-                    b.ToTable("UserTeams");
-                });
-
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.Property<string>("MembersId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("TeamsTeamId")
-                        .HasColumnType("int");
+                    b.HasKey("Id", "TeamId");
 
-                    b.HasKey("MembersId", "TeamsTeamId");
+                    b.HasIndex("TeamId");
 
-                    b.HasIndex("TeamsTeamId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("TeamUser");
+                    b.ToTable("UserTeams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -635,19 +647,17 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
+                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Task", b =>
@@ -663,6 +673,8 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Tasks");
                 });
 
@@ -671,6 +683,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("TasksAssigned");
+
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }
