@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,7 @@ using TaskManagementSystem.Api.Authentication.Configrations;
 using TaskManagementSystem.Api.Authentication.Configrations.Models.Generic;
 using TaskManagementSystem.Api.Authentication.Configrations.Models.incomming;
 using TaskManagementSystem.Api.Authentication.Configrations.Models.outgoing;
+using TaskManagementSystem.Models.Dtos.Incomming;
 using TaskManagementSystem.Models.Interfaces;
 using TaskManagementSystem.Models.Models;
 
@@ -148,6 +150,35 @@ public class UserController
         }
 
         return Ok("Role added successfully"); //change it
+    }
+
+
+    [HttpGet("Users")]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await unitOfWork.User.GetAllAsync());
+    }
+    [HttpGet("Id")]
+    public async Task<IActionResult> GetById(string Id)
+    {
+        return Ok(await unitOfWork.User.FindAsync(user => user.Id == Id,x => x.Teams));
+    }
+
+    /*[Authorize(Roles = "TeamLeader")]*/
+    [HttpPost("AssignTeam")]
+    public async Task<IActionResult> AssignUserToTeam([FromBody] AssignUserToTeamRequestDto assignUserToTeamRequest)
+    {
+        var isExist = await userManager.FindByIdAsync(assignUserToTeamRequest.UserId);
+        var isTeamExist = await unitOfWork.Team.GetByIdAsync(assignUserToTeamRequest.TeamId);
+        if (isExist != null && isTeamExist != null)
+        {
+            await unitOfWork.UserTeam.AddAsync(new UserTeam { Id = assignUserToTeamRequest.UserId, TeamId = assignUserToTeamRequest.TeamId });
+        }
+        else
+        {
+            return BadRequest("Invalid payload");
+        }
+        return Ok($"This user {isExist.Id} is assigned to this team {isTeamExist.TeamId}");
     }
 
     /*[HttpPost]
