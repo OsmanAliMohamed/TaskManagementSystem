@@ -24,15 +24,15 @@ public class ApplicationDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        /*modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
+        modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "User", NormalizedName = "USER" });
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "TeamLeader", NormalizedName = "TEAMLEADER" });
-        */// Configure many-to-many relationship between User and Team
-/*        modelBuilder.Entity<User>()
-            .HasMany(u => u.Teams)
-            .WithMany(t => t.Members)
-            .UsingEntity(j => j.ToTable("UserTeams"));
-*/
+        // Configure many-to-many relationship between User and Team
+        /*        modelBuilder.Entity<User>()
+                    .HasMany(u => u.Teams)
+                    .WithMany(t => t.Members)
+                    .UsingEntity(j => j.ToTable("UserTeams"));
+        */
 
 
         // Configure self-referencing many-to-many relationship for Task dependencies
