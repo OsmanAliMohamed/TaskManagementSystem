@@ -20,9 +20,11 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     public IBaseRepository<TaskDependency> TaskDependency { get; private set; }
 
     public IBaseRepository<Team> Team { get; private set; }
+    public IBaseRepository<UserTeam> UserTeam { get; private set; }
 
-    public IBaseRepository<User> User { get; private set; }
+    public IUserRepository User { get; private set; }
 
+    public IBaseRepository<RefreshToken> RefreshToken { get; private set; }
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -33,12 +35,14 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         AuditTrail = new BaseRepository<AuditTrail>(_context);
         TaskDependency = new BaseRepository<TaskDependency>(_context);
         Team = new BaseRepository<Team>(_context);
-        User = new BaseRepository<User>(_context);
+        UserTeam = new BaseRepository<UserTeam>(_context);
+        User = new UserRepository(_context);
+        RefreshToken = new BaseRepository<RefreshToken>(_context);
     }
 
-    public async void CompleteAsync()
+    public void CompleteAsync()
     {
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
     public void Dispose()
     {

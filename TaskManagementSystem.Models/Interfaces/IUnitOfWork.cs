@@ -11,7 +11,9 @@ public interface IUnitOfWork
     IBaseRepository<AuditTrail> AuditTrail { get; }
     IBaseRepository <TaskDependency> TaskDependency { get; }
     IBaseRepository<Team> Team { get; }
-    IBaseRepository<User> User { get; }
+    IBaseRepository<UserTeam> UserTeam { get; }
+    IUserRepository User { get; }
+    IBaseRepository<RefreshToken> RefreshToken { get; }
 
     void CompleteAsync(); 
 

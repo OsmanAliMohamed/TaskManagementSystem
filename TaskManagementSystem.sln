@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagmentSystem.Busines
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagementSystem.Models", "TaskManagementSystem.Models\TaskManagementSystem.Models.csproj", "{135DA551-447F-4CDD-B62B-5FB4D815AAD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagementSystem.Web", "TaskManagementSystem.Web\TaskManagementSystem.Web.csproj", "{9F29A36A-ED2E-4529-90A0-B125B3F42844}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagementSystem.Api", "TaskManagementSystem.Api\TaskManagementSystem.Api.csproj", "{560EAF9D-48EF-4419-AE0D-428C480A0758}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{135DA551-447F-4CDD-B62B-5FB4D815AAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{135DA551-447F-4CDD-B62B-5FB4D815AAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{135DA551-447F-4CDD-B62B-5FB4D815AAD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F29A36A-ED2E-4529-90A0-B125B3F42844}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F29A36A-ED2E-4529-90A0-B125B3F42844}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F29A36A-ED2E-4529-90A0-B125B3F42844}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F29A36A-ED2E-4529-90A0-B125B3F42844}.Release|Any CPU.Build.0 = Release|Any CPU
 		{560EAF9D-48EF-4419-AE0D-428C480A0758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{560EAF9D-48EF-4419-AE0D-428C480A0758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{560EAF9D-48EF-4419-AE0D-428C480A0758}.Release|Any CPU.ActiveCfg = Release|Any CPU

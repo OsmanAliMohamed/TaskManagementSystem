@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Models.Interfaces;
 
@@ -35,10 +36,28 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return await _dbSet.ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public virtual async Task<T> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
     }
+
+
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await Task.FromResult(_dbSet.Where(predicate).ToList());
+    }
+
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+    {
+        var query = _dbSet.Where(predicate);
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+        return await Task.FromResult(query);
+    }
+
+
 
     public void Update(T entity)
     {

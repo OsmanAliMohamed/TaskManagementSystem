@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240905200520_fast")]
+    partial class fast
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "66fab0be-5970-4ba1-8a6f-d45f8269c8d0",
+                            Id = "35cdc22a-0be5-426b-9ea5-18b4820db630",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d3224902-27b4-400a-a7dc-851c4f5db613",
+                            Id = "b0b0cda8-3c3d-4be9-a2fc-1a4f07264a81",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "efd39979-efda-49fc-8796-a8c1af646cfb",
+                            Id = "de6f36ad-3bbd-411a-b932-dffb0c03a492",
                             Name = "TeamLeader",
                             NormalizedName = "TEAMLEADER"
                         });
@@ -489,14 +492,7 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserTeams");
                 });
@@ -652,14 +648,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TaskManagementSystem.Models.Models.User", null)
                         .WithMany("Teams")
                         .HasForeignKey("UserId");
@@ -678,8 +668,6 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
-                    b.Navigation("Members");
-
                     b.Navigation("Tasks");
                 });
 

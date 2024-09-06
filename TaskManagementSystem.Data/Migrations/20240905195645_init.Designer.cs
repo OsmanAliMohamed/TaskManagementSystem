@@ -12,7 +12,7 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240903083201_init")]
+    [Migration("20240905195645_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -50,6 +50,26 @@ namespace TaskManagementSystem.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "66fab0be-5970-4ba1-8a6f-d45f8269c8d0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "d3224902-27b4-400a-a7dc-851c4f5db613",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "efd39979-efda-49fc-8796-a8c1af646cfb",
+                            Name = "TeamLeader",
+                            NormalizedName = "TEAMLEADER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -105,10 +125,12 @@ namespace TaskManagementSystem.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -145,10 +167,12 @@ namespace TaskManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -254,6 +278,49 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Task", b =>
@@ -412,19 +479,24 @@ namespace TaskManagementSystem.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
-                    b.Property<string>("MembersId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("TeamsTeamId")
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("MembersId", "TeamsTeamId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("TeamsTeamId");
+                    b.HasKey("Id", "TeamId");
 
-                    b.ToTable("UserTeams", (string)null);
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTeams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -480,13 +552,11 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Attachment", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.Task", "Task")
+                    b.HasOne("TaskManagementSystem.Models.Models.Task", null)
                         .WithMany("Attachments")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.AuditTrail", b =>
@@ -524,13 +594,22 @@ namespace TaskManagementSystem.Data.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("TaskId1");
 
-                    b.HasOne("TaskManagementSystem.Models.Models.User", "User")
+                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.RefreshToken", b =>
+                {
+                    b.HasOne("TaskManagementSystem.Models.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -571,19 +650,17 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
+                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Task", b =>
@@ -599,6 +676,8 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Tasks");
                 });
 
@@ -607,6 +686,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("TasksAssigned");
+
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }
