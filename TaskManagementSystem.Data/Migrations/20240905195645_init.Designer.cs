@@ -12,8 +12,8 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240904193058_addRefreshTokensupdated")]
-    partial class addRefreshTokensupdated
+    [Migration("20240905195645_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a271770a-c57b-4ca0-9d51-a5ff78e7ee0b",
+                            Id = "66fab0be-5970-4ba1-8a6f-d45f8269c8d0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "305e461a-f377-47c5-8f3d-28e3d8b57817",
+                            Id = "d3224902-27b4-400a-a7dc-851c4f5db613",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "b05a03af-28b6-4efb-9c34-2dbc6aa31283",
+                            Id = "efd39979-efda-49fc-8796-a8c1af646cfb",
                             Name = "TeamLeader",
                             NormalizedName = "TEAMLEADER"
                         });
@@ -479,19 +479,24 @@ namespace TaskManagementSystem.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
-                    b.Property<string>("MembersId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("TeamsTeamId")
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("MembersId", "TeamsTeamId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("TeamsTeamId");
+                    b.HasKey("Id", "TeamId");
 
-                    b.ToTable("UserTeams", (string)null);
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTeams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -547,13 +552,11 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Attachment", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.Task", "Task")
+                    b.HasOne("TaskManagementSystem.Models.Models.Task", null)
                         .WithMany("Attachments")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.AuditTrail", b =>
@@ -591,15 +594,13 @@ namespace TaskManagementSystem.Data.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("TaskId1");
 
-                    b.HasOne("TaskManagementSystem.Models.Models.User", "User")
+                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Task");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.RefreshToken", b =>
@@ -649,19 +650,17 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
-                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
+                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TaskManagementSystem.Models.Models.User", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Task", b =>
@@ -677,6 +676,8 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Tasks");
                 });
 
@@ -685,6 +686,8 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("TasksAssigned");
+
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }

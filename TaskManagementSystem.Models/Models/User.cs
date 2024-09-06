@@ -12,7 +12,7 @@ namespace TaskManagementSystem.Models.Models
         public DateTime BirthDate  { get; set; }
         public string FirstName { get; set; } 
         public string LastName { get; set; } 
-        public ICollection<Team> Teams { get; set; }
+        public ICollection<UserTeam> Teams { get; set; }
         public ICollection<Task> TasksAssigned { get; set; }
         public ICollection<Comment> Comments { get; set; }
     }

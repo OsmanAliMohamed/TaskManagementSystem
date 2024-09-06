@@ -27,12 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "User", NormalizedName = "USER" });
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "TeamLeader", NormalizedName = "TEAMLEADER" });
-        // Configure many-to-many relationship between User and Team
-        /*        modelBuilder.Entity<User>()
-                    .HasMany(u => u.Teams)
-                    .WithMany(t => t.Members)
-                    .UsingEntity(j => j.ToTable("UserTeams"));
-        */
+        
 
 
         // Configure self-referencing many-to-many relationship for Task dependencies
@@ -56,11 +51,11 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .WithMany()
             .HasForeignKey(td => td.TaskId)
             .OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<Comment>()
+        /*modelBuilder.Entity<Comment>()
             .HasOne(td => td.Task)
             .WithMany()
             .HasForeignKey(td => td.TaskId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict);*/
     }
 }
 

@@ -11,9 +11,9 @@ namespace TaskManagementSystem.Api.Controllers;
 public class TaskController (IUnitOfWork unitOfWork) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(string id)
     {
-        var result = await unitOfWork.Task.FindAsync(x => x.TaskId == id, x => x.Comments, x => x.Attachments);
+        var result = await unitOfWork.Task.FindAsync(x => x.AssignedToUserId == id, x => x.Comments, x => x.Attachments);
         return Ok(result);
     }
 

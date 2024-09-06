@@ -51,19 +51,19 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35cdc22a-0be5-426b-9ea5-18b4820db630",
+                            Id = "66fab0be-5970-4ba1-8a6f-d45f8269c8d0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b0b0cda8-3c3d-4be9-a2fc-1a4f07264a81",
+                            Id = "d3224902-27b4-400a-a7dc-851c4f5db613",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "de6f36ad-3bbd-411a-b932-dffb0c03a492",
+                            Id = "efd39979-efda-49fc-8796-a8c1af646cfb",
                             Name = "TeamLeader",
                             NormalizedName = "TEAMLEADER"
                         });
@@ -489,7 +489,14 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id", "TeamId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserTeams");
                 });
@@ -645,8 +652,14 @@ namespace TaskManagementSystem.Data.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
+            modelBuilder.Entity("TaskManagementSystem.Models.Models.UserTeam", b =>
                 {
+                    b.HasOne("TaskManagementSystem.Models.Models.Team", null)
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TaskManagementSystem.Models.Models.User", null)
                         .WithMany("Teams")
                         .HasForeignKey("UserId");
@@ -665,6 +678,8 @@ namespace TaskManagementSystem.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.Models.Models.Team", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Tasks");
                 });
 
