@@ -106,6 +106,7 @@ public class UserController
                 {
                     Token = jwtToken.Token,
                     RefreshToken = jwtToken.RefreshToken,
+                    userId = userExists.Id,
                     Success = true,
                 });
             }

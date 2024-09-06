@@ -223,93 +223,94 @@
     <footer>
         <p>&copy; 2024 Task Management System</p>
     </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    // Modal Handling
-    var loginModal = document.getElementById("loginModal");
-    var registerModal = document.getElementById("registerModal");
-    var loginBtn = document.getElementById("loginBtn");
-    var registerBtn = document.getElementById("registerBtn");
-    var loginClose = document.getElementById("loginClose");
-    var registerClose = document.getElementById("registerClose");
+        // Modal Handling
+        var loginModal = document.getElementById("loginModal");
+        var registerModal = document.getElementById("registerModal");
+        var loginBtn = document.getElementById("loginBtn");
+        var registerBtn = document.getElementById("registerBtn");
+        var loginClose = document.getElementById("loginClose");
+        var registerClose = document.getElementById("registerClose");
 
-    loginBtn.onclick = function () {
-        loginModal.style.display = "block";
-    }
+        loginBtn.onclick = function () {
+            loginModal.style.display = "block";
+        }
 
-    registerBtn.onclick = function () {
-        registerModal.style.display = "block";
-    }
+        registerBtn.onclick = function () {
+            registerModal.style.display = "block";
+        }
 
-    loginClose.onclick = function () {
-        loginModal.style.display = "none";
-    }
-
-    registerClose.onclick = function () {
-        registerModal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target == loginModal) {
+        loginClose.onclick = function () {
             loginModal.style.display = "none";
         }
-        if (event.target == registerModal) {
+
+        registerClose.onclick = function () {
             registerModal.style.display = "none";
         }
-    }
 
-    // AJAX for Login
-    function login() {
-        const email = $('#loginEmail').val();
-        const password = $('#loginPassword').val();
-
-        $.ajax({
-            url: '/api/user/login',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                UserName: email,
-                Password: password
-            }),
-            success: function (response) {
-                console.log(response)
-                alert(response);
+        window.onclick = function (event) {
+            if (event.target == loginModal) {
                 loginModal.style.display = "none";
-                window.location.href = "dashboard.html";
-            },
-            error: function () {
-                $('#loginError').show();
             }
-        });
-    }
-
-    // AJAX for Registration
-    function register() {
-        const firstName = $('#firstName').val();
-        const lastName = $('#lastName').val();
-        const email = $('#registerEmail').val();
-        const password = $('#registerPassword').val();
-
-        $.ajax({
-            url: '/api/user/register',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                FirstName: firstName,
-                LastName: lastName,
-                Email: email,
-                Password: password
-            }),
-            success: function (response) {
-                alert('Registration Successful');
+            if (event.target == registerModal) {
                 registerModal.style.display = "none";
-            },
-            error: function () {
-                $('#registerError').show();
             }
-        });
-    }
+        }
+
+        // AJAX for Login
+        function login() {
+            const email = $('#loginEmail').val();
+            const password = $('#loginPassword').val();
+
+            $.ajax({
+                url: '/api/user/login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    UserName: email,
+                    Password: password
+                }),
+                success: function (response) {
+                    console.log(response)
+                    const userid = response.userId;
+                    localStorage.setItem('userId', userid);
+                    loginModal.style.display = "none";
+                    window.location.href = "dashboard.html";
+                },
+                error: function () {
+                    $('#loginError').show();
+                }
+            });
+        }
+
+        // AJAX for Registration
+        function register() {
+            const firstName = $('#firstName').val();
+            const lastName = $('#lastName').val();
+            const email = $('#registerEmail').val();
+            const password = $('#registerPassword').val();
+
+            $.ajax({
+                url: '/api/user/register',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Password: password
+                }),
+                success: function (response) {
+                    alert('Registration Successful');
+                    registerModal.style.display = "none";
+                },
+                error: function () {
+                    $('#registerError').show();
+                }
+            });
+        }
     </script>
 
 </body>

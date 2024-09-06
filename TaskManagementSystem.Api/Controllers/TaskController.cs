@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Models.Dtos.Incomming;
 using TaskManagementSystem.Models.Interfaces;
@@ -24,19 +25,19 @@ public class TaskController (IUnitOfWork unitOfWork) : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTask([FromBody] AddTaskRequestDto addTaskRequest)
+    public async Task<IActionResult> AddTask([FromBody] TaskManagementSystem.Api.Dto.AddTaskRequestDto addTaskRequest)
     {
         await unitOfWork.Task.AddAsync(new Models.Models.Task
         {
-            AssignedToTeamId = addTaskRequest.AssignedToTeamId,
-            AssignedToUserId = addTaskRequest.AssignedToUserId,
+            //AssignedToTeamId = addTaskRequest.AssignedToTeamId,
+            AssignedToUserId = addTaskRequest.AssignedToUserId,////addTaskRequest.AssignedToUserId,
             CreatedAt = DateTime.UtcNow,
             DueDate = addTaskRequest.DueDate,
             Description = addTaskRequest.Description,
             Title = addTaskRequest.Title,
             Priority = addTaskRequest.Priority,
             Status = addTaskRequest.Status,
-            CreatedByUserId = addTaskRequest.CreatedByUserId
+            CreatedByUserId = addTaskRequest.AssignedToUserId
         });
         unitOfWork.CompleteAsync();
         return Ok();

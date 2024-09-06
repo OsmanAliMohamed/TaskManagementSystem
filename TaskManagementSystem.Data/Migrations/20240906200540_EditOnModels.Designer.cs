@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240906200540_EditOnModels")]
+    partial class EditOnModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace TaskManagementSystem.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eff9758e-924b-4f21-a856-e89d5592d16c",
+                            Id = "a50332fb-67cd-4c82-a867-669b971886ae",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "649db79e-7103-44c5-923e-cc19066df646",
+                            Id = "2be4f3b1-bd9a-4509-8b02-30c59102ec4e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "36eb7c5c-e476-46db-9b41-f4ba97154235",
+                            Id = "1449048a-9fb4-4e15-8400-46efbfbdfbdb",
                             Name = "TeamLeader",
                             NormalizedName = "TEAMLEADER"
                         });

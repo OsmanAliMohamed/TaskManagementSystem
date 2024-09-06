@@ -18,13 +18,13 @@ namespace TaskManagementSystem.Models.Models
         public TaskPriority Priority { get; set; }
         public TaskStatus Status { get; set; }
 
-        public string AssignedToUserId { get; set; }
+        public string? AssignedToUserId { get; set; }
         public User AssignedToUser { get; set; }
 
         public int? AssignedToTeamId { get; set; }
         public Team AssignedToTeam { get; set; }
 
-        public string CreatedByUserId { get; set; }
+        public string? CreatedByUserId { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Attachment> Attachments { get; set; }

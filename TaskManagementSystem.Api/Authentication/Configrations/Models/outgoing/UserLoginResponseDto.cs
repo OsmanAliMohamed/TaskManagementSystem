@@ -2,4 +2,5 @@
 
 public class UserLoginResponseDto:AuthResult
 {
+    public string userId { get; set; }
 }

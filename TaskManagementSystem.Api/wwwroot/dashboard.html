@@ -150,14 +150,14 @@
             <input type="text" id="new-task-desc" placeholder="Task Description">
             <input type="date" id="new-task-duedate" placeholder="Due Date">
             <select id="new-task-priority">
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
+                <option value=0>Low</option>
+                <option value=1>Medium</option>
+                <option value=2>High</option>
             </select>
             <select id="new-task-status">
-                <option value="NotStarted">Not Started</option>
-                <option value="InProgress">In Progress</option>
-                <option value="Completed">Completed</option>
+                <option value=0>Not Started</option>
+                <option value=1>In Progress</option>
+                <option value=2>Completed</option>
             </select>
             <input type="text" id="new-task-assigneduser" placeholder="Assigned to (User ID)">
             <input type="text" id="new-task-assignedteam" placeholder="Assigned to (Team ID)">
@@ -169,13 +169,13 @@
     <script>
         // Fetch all tasks from the server and populate the table
         function loadTasks() {
-            fetch('/api/tasks')
+            fetch('/api/Task/GetAll')
                 .then(response => response.json())
                 .then(data => {
                     const taskListBody = document.getElementById('task-list-body');
                     taskListBody.innerHTML = '';
 
-                    data.forEach(task => {
+                    Array.from(data).forEach(task => {
                         taskListBody.innerHTML += `
                             <tr>
                                 <td>${task.id}</td>
@@ -215,6 +215,7 @@
             const taskStatus = document.getElementById('new-task-status').value;
             const assignedUser = document.getElementById('new-task-assigneduser').value;
             const assignedTeam = document.getElementById('new-task-assignedteam').value;
+            const userId = localStorage.getItem('userId');
 
             fetch('/api/task', {
                 method: 'POST',
@@ -225,10 +226,10 @@
                     title: taskTitle,
                     description: taskDesc,
                     dueDate: taskDueDate,
-                    priority: taskPriority,
-                    status: taskStatus,
-                    assignedToUserId: assignedUser,
-                    assignedToTeamId: assignedTeam
+                    priority: parseInt(taskPriority),
+                    status: parseInt(taskStatus),
+                    assignedToUserId: userId,
+                    //assignedToTeamId: assignedTeam
                 })
             }).then(response => {
                 if (response.ok) {
