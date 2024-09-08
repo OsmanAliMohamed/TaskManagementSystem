@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.Api.Dto;
+using TaskManagementSystem.Models.Dtos;
 using TaskManagementSystem.Models.Dtos.Incomming;
 using TaskManagementSystem.Models.Interfaces;
 
@@ -61,4 +63,28 @@ public class TaskController (IUnitOfWork unitOfWork) : Controller
     {
         return Ok(await unitOfWork.Comment.GetAllAsync());
     }
+    [HttpDelete]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+        await unitOfWork.Task.DeleteAsync(id);
+        unitOfWork.CompleteAsync();
+        return Ok();
+    }
+    [HttpPut]
+    public async Task<IActionResult> UpdateTask(int id, [FromBody] Api.Dto.AddTaskRequestDto task)
+    {
+        var ans = await unitOfWork.Task.FindAsync(t => t.TaskId == id);
+        var matched = ans.FirstOrDefault();
+        if (matched != null)
+        {
+            matched.Priority = task.Priority;
+            matched.Status = task.Status;
+            matched.Description = task.Description; 
+            matched.DueDate = task.DueDate;
+        }
+        unitOfWork.CompleteAsync();
+        return Ok();
+
+    }
+    
 }

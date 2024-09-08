@@ -243,7 +243,7 @@
         // Delete a task
         function deleteTask(taskId) {
             if (confirm('Are you sure you want to delete this task?')) {
-                fetch(`/api/tasks/${taskId}`, {
+                fetch(`/api/task/${taskId}`, {
                     method: 'DELETE'
                 }).then(response => {
                     if (response.ok) {
@@ -265,7 +265,7 @@
             const assignedTeam = prompt('Enter the new assigned team ID (or leave blank):');
 
             if (newTaskTitle && newTaskDesc && newTaskDueDate && newTaskPriority && newTaskStatus) {
-                fetch(`/api/tasks/${taskId}`, {
+                fetch(`/api/task/${taskId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -290,7 +290,7 @@
 
         // View task details
         function viewTaskDetails(taskId) {
-            fetch(`/api/tasks/${taskId}`)
+            fetch(`/api/task/${taskId}`)
                 .then(response => response.json())
                 .then(task => {
                     alert(`Task Details:\n\nTitle: ${task.title}\nDescription: ${task.description}\nPriority: ${task.priority}\nStatus: ${task.status}\nDue Date: ${new Date(task.dueDate).toLocaleDateString()}\nAssigned To: ${task.assignedToUserId || task.assignedToTeamId || 'Unassigned'}\nCreated By: ${task.createdByUserId}\nCreated At: ${new Date(task.createdAt).toLocaleDateString()}`);
