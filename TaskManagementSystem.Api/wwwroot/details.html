@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details</title>
+    <!-- إضافة Bootstrap لتحسين التصميم -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .task-details {
+            margin-top: 50px;
+        }
+
+            .task-details h3 {
+                margin-bottom: 30px;
+            }
+
+            .task-details p {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .task-details .back-button {
+                margin-top: 20px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container task-details">
+        <h3>Task Details</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Title:</strong> <span id="task-title"></span></p>
+                <p><strong>Description:</strong> <span id="task-description"></span></p>
+                <p><strong>Priority:</strong> <span id="task-priority"></span></p>
+                <p><strong>Status:</strong> <span id="task-status"></span></p>
+                <p><strong>Due Date:</strong> <span id="task-dueDate"></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Assigned To:</strong> <span id="task-assignedToUser"></span></p>
+            </div>
+        </div>
+
+        <!-- زر الرجوع إلى الداشبورد -->
+        <button class="btn btn-primary back-button" onclick="goBackToDashboard()">Back to Dashboard</button>
+    </div>
+
+    <script>
+        // جلب بيانات المهمة من الـ API بناءً على ID
+        function loadTaskDetails() {
+            // الحصول على ID المهمة من الرابط (URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('id');
+
+            if (taskId) {
+                fetch(`/api/task/${taskId}`)
+                    .then(response => response.json())
+                    .then(task => {
+                        // تعبئة بيانات المهمة في الصفحة
+                        document.getElementById('task-title').textContent = task.title;
+                        document.getElementById('task-description').textContent = task.description;
+                        document.getElementById('task-priority').textContent = task.priority;
+                        document.getElementById('task-status').textContent = task.status;
+                        document.getElementById('task-dueDate').textContent = task.dueDate.split('T')[0];
+                        document.getElementById('task-assignedToUser').textContent = task.assignedToUser;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching task details:', error);
+                        alert('Failed to load task details.');
+                    });
+            } else {
+                alert('No task ID provided.');
+            }
+        }
+
+        // استدعاء الدالة لتحميل بيانات المهمة عند فتح الصفحة
+        loadTaskDetails();
+
+        // الدالة للرجوع إلى الداشبورد
+        function goBackToDashboard() {
+            window.location.href = '/dashboard'; // تعديل رابط لوحة التحكم حسب النظام لديك
+        }
+    </script>
+
+    <!-- إضافة Bootstrap JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

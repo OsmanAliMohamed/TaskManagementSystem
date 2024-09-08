@@ -11,19 +11,20 @@ namespace TaskManagementSystem.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 /*[Authorize(Roles = "User")]*/
-public class TaskController (IUnitOfWork unitOfWork) : Controller
+public class TaskController(IUnitOfWork unitOfWork) : Controller
 {
-    [HttpGet]
-    public async Task<IActionResult> GetById(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await unitOfWork.Task.FindAsync(x => x.AssignedToUserId == id, x => x.Comments, x => x.Attachments);
-        return Ok(result);
+        var result = await unitOfWork.Task.FindAsync(x => x.TaskId == id, x => x.Comments, x => x.Attachments);
+        return Ok(result.FirstOrDefault());
     }
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await unitOfWork.Task.GetAllAsync());
+        var tasks = await unitOfWork.Task.GetAllAsync();
+        return Ok(tasks);
     }
 
     [HttpPost]
@@ -63,20 +64,21 @@ public class TaskController (IUnitOfWork unitOfWork) : Controller
     {
         return Ok(await unitOfWork.Comment.GetAllAsync());
     }
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
         await unitOfWork.Task.DeleteAsync(id);
         unitOfWork.CompleteAsync();
         return Ok();
     }
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTask(int id, [FromBody] Api.Dto.AddTaskRequestDto task)
     {
         var ans = await unitOfWork.Task.FindAsync(t => t.TaskId == id);
         var matched = ans.FirstOrDefault();
         if (matched != null)
         {
+            matched.Title = task.Title;
             matched.Priority = task.Priority;
             matched.Status = task.Status;
             matched.Description = task.Description; 

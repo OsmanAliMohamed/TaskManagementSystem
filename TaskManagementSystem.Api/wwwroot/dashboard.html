@@ -123,7 +123,7 @@
     <div class="content">
         <h2>All Tasks</h2>
 
-        <button class="create-button" onclick="showCreateTaskForm()">Create Task</button>
+        <button onclick="goToCreateTask()">Create Task</button>
 
         <table class="task-list" id="task-list">
             <thead>
@@ -134,7 +134,6 @@
                     <th>Priority</th>
                     <th>Status</th>
                     <th>Due Date</th>
-                    <th>Assigned To</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -142,31 +141,17 @@
                 <!-- Tasks will be dynamically loaded here -->
             </tbody>
         </table>
-
-        <!-- Create Task Form -->
-        <div class="create-task-form" id="create-task-form">
-            <h3>Create a New Task</h3>
-            <input type="text" id="new-task-title" placeholder="Task Title">
-            <input type="text" id="new-task-desc" placeholder="Task Description">
-            <input type="date" id="new-task-duedate" placeholder="Due Date">
-            <select id="new-task-priority">
-                <option value=0>Low</option>
-                <option value=1>Medium</option>
-                <option value=2>High</option>
-            </select>
-            <select id="new-task-status">
-                <option value=0>Not Started</option>
-                <option value=1>In Progress</option>
-                <option value=2>Completed</option>
-            </select>
-            <input type="text" id="new-task-assigneduser" placeholder="Assigned to (User ID)">
-            <input type="text" id="new-task-assignedteam" placeholder="Assigned to (Team ID)">
-            <button onclick="createTask()">Create Task</button>
-            <button onclick="hideCreateTaskForm()">Cancel</button>
-        </div>
     </div>
 
     <script>
+        function goToCreateTask() {
+            window.location.href = 'task.html'; // صفحة إنشاء المهام
+        }
+
+        // Navigate to the update task page with task ID
+        function goToUpdateTask(taskId) {
+            window.location.href = `task.html?id=${taskId}`; // صفحة تعديل المهام مع تمرير ID
+        }
         // Fetch all tasks from the server and populate the table
         function loadTasks() {
             fetch('/api/Task/GetAll')
@@ -177,67 +162,22 @@
 
                     Array.from(data).forEach(task => {
                         taskListBody.innerHTML += `
-                            <tr>
-                                <td>${task.id}</td>
-                                <td>${task.title}</td>
-                                <td>${task.description}</td>
-                                <td>${task.priority}</td>
-                                <td>${task.status}</td>
-                                <td>${new Date(task.dueDate).toLocaleDateString()}</td>
-                                <td>${task.assignedToUserId || task.assignedToTeamId || 'Unassigned'}</td>
-                                <td class="action-buttons">
-                                    <button class="update-button" onclick="updateTask(${task.id})">Update</button>
-                                    <button class="delete-button" onclick="deleteTask(${task.id})">Delete</button>
-                                    <button class="details-button" onclick="viewTaskDetails(${task.id})">Details</button>
-                                </td>
-                            </tr>
-                        `;
+                                <tr>
+                                    <td>${task.taskId}</td>
+                                    <td>${task.title}</td>
+                                    <td>${task.description}</td>
+                                    <td>${task.priority}</td>
+                                    <td>${task.status}</td>
+                                    <td>${new Date(task.dueDate).toLocaleDateString()}</td>
+                                    <td class="action-buttons">
+                                        <button class="update-button" onclick="goToUpdateTask(${task.taskId})">Update</button>
+                                        <button class="delete-button" onclick="deleteTask(${task.taskId})">Delete</button>
+                                        <button class="details-button" onclick="viewTaskDetails(${task.taskId})">Details</button>
+                                    </td>
+                                </tr>
+                            `;
                     });
                 });
-        }
-
-        // Show the create task form
-        function showCreateTaskForm() {
-            document.getElementById('create-task-form').style.display = 'block';
-        }
-
-        // Hide the create task form
-        function hideCreateTaskForm() {
-            document.getElementById('create-task-form').style.display = 'none';
-        }
-
-        // Create a new task
-        function createTask() {
-            const taskTitle = document.getElementById('new-task-title').value;
-            const taskDesc = document.getElementById('new-task-desc').value;
-            const taskDueDate = document.getElementById('new-task-duedate').value;
-            const taskPriority = document.getElementById('new-task-priority').value;
-            const taskStatus = document.getElementById('new-task-status').value;
-            const assignedUser = document.getElementById('new-task-assigneduser').value;
-            const assignedTeam = document.getElementById('new-task-assignedteam').value;
-            const userId = localStorage.getItem('userId');
-
-            fetch('/api/task', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: taskTitle,
-                    description: taskDesc,
-                    dueDate: taskDueDate,
-                    priority: parseInt(taskPriority),
-                    status: parseInt(taskStatus),
-                    assignedToUserId: userId,
-                    //assignedToTeamId: assignedTeam
-                })
-            }).then(response => {
-                if (response.ok) {
-                    alert('Task created successfully!');
-                    loadTasks(); // Reload the tasks list
-                    hideCreateTaskForm();
-                }
-            });
         }
 
         // Delete a task
@@ -254,47 +194,11 @@
             }
         }
 
-        // Update a task
-        function updateTask(taskId) {
-            const newTaskTitle = prompt('Enter the new task title:');
-            const newTaskDesc = prompt('Enter the new task description:');
-            const newTaskDueDate = prompt('Enter the new task due date (YYYY-MM-DD):');
-            const newTaskPriority = prompt('Enter the new task priority (Low, Medium, High):');
-            const newTaskStatus = prompt('Enter the new task status (NotStarted, InProgress, Completed):');
-            const assignedUser = prompt('Enter the new assigned user ID:');
-            const assignedTeam = prompt('Enter the new assigned team ID (or leave blank):');
-
-            if (newTaskTitle && newTaskDesc && newTaskDueDate && newTaskPriority && newTaskStatus) {
-                fetch(`/api/task/${taskId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title: newTaskTitle,
-                        description: newTaskDesc,
-                        dueDate: newTaskDueDate,
-                        priority: newTaskPriority,
-                        status: newTaskStatus,
-                        assignedToUserId: assignedUser,
-                        assignedToTeamId: assignedTeam
-                    })
-                }).then(response => {
-                    if (response.ok) {
-                        alert('Task updated successfully!');
-                        loadTasks(); // Reload the tasks list
-                    }
-                });
-            }
-        }
+        
 
         // View task details
         function viewTaskDetails(taskId) {
-            fetch(`/api/task/${taskId}`)
-                .then(response => response.json())
-                .then(task => {
-                    alert(`Task Details:\n\nTitle: ${task.title}\nDescription: ${task.description}\nPriority: ${task.priority}\nStatus: ${task.status}\nDue Date: ${new Date(task.dueDate).toLocaleDateString()}\nAssigned To: ${task.assignedToUserId || task.assignedToTeamId || 'Unassigned'}\nCreated By: ${task.createdByUserId}\nCreated At: ${new Date(task.createdAt).toLocaleDateString()}`);
-                });
+            window.location.href = `/details.html?id=${taskId}`;
         }
 
         // Load tasks when the page loads

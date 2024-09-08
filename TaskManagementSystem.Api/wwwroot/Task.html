@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Task Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 15px 0;
+        }
+
+            header .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            header nav a {
+                color: white;
+                text-decoration: none;
+                padding: 10px 20px;
+                background: #4CAF50;
+                border-radius: 4px;
+            }
+
+                header nav a:hover {
+                    background: #45a049;
+                }
+
+        .content {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            font-size: 32px;
+            color: #333;
+        }
+
+        .task-list {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+            .task-list th, .task-list td {
+                border: 1px solid #ddd;
+                padding: 10px;
+            }
+
+            .task-list th {
+                background-color: #f2f2f2;
+            }
+
+            .task-list td {
+                text-align: center;
+            }
+
+        .action-buttons button {
+            margin: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .create-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        .update-button, .details-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+        }
+
+        .create-task-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .create-task-form input, .create-task-form button {
+                padding: 10px;
+                margin: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>Task Management System</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <h2 id="form-title" class="mb-4">Create Task</h2>
+
+        <form id="task-form">
+            <input type="hidden" id="task-id">
+
+            <!-- Title Field -->
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Task Title">
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" placeholder="Task Description">
+            </div>
+
+            <!-- Priority Dropdown -->
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select class="form-control" id="priority">
+                    <option value="0">Low</option>
+                    <option value="1">Medium</option>
+                    <option value="2">High</option>
+                </select>
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status">
+                    <option value="0">To Do</option>
+                    <option value="1">In Progress</option>
+                    <option value="2">Completed</option>
+                </select>
+            </div>
+
+            <!-- Due Date Field -->
+            <div class="form-group">
+                <label for="dueDate">Due Date</label>
+                <input type="date" class="form-control" id="dueDate">
+            </div>        
+            <button type="submit" id="submit-button" class="btn btn-primary">Create Task</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formTitle = document.getElementById('form-title');
+            const taskForm = document.getElementById('task-form');
+            const submitButton = document.getElementById('submit-button');
+            const taskIdField = document.getElementById('task-id');
+            const userId = localStorage.getItem('userId')
+            // Check if we are in update mode (e.g., task ID passed in the URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('id'); // Get task ID from query parameters
+
+            if (taskId) {
+                // Update Mode
+                formTitle.innerText = 'Update Task';
+                submitButton.innerText = 'Update Task';
+                fetchTaskData(taskId); // Fetch task data to prefill the form
+            } else {
+                // Create Mode
+                formTitle.innerText = 'Create Task';
+                submitButton.innerText = 'Create Task';
+            }
+
+            // Form submit event
+            taskForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const taskData = {
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    priority: document.getElementById('priority').value,
+                    status: document.getElementById('status').value,
+                    dueDate: document.getElementById('dueDate').value,
+                    assignedToUserId: userId,
+                };
+
+                if (taskId) {
+                    updateTask(taskId, taskData); // Update task
+                } else {
+                    createTask(taskData); // Create new task
+                }
+            });
+
+            // Function to fetch task data for update
+            function fetchTaskData(id) {
+                fetch(`/api/task/${id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(task => {
+                        // Prefill the form with the existing task data
+                        document.getElementById('title').value = task.title;
+                        document.getElementById('description').value = task.description;
+                        document.getElementById('priority').value = task.priority;
+                        document.getElementById('status').value = task.status;
+                        const dueDate = task.dueDate ? task.dueDate.split('T')[0] : ''; // Removes time part
+                        document.getElementById('dueDate').value = dueDate;
+                        document.getElementById('task-id').value = task.id;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching task:', error);
+                        alert('Failed to fetch task data. Please try again.');
+                    });
+            }
+
+            // Function to create a new task
+            function createTask(taskData) {
+                fetch('/api/task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: taskData.title,
+                        description: taskData.description,
+                        dueDate: taskData.dueDate,
+                        priority: parseInt(taskData.priority),
+                        status: parseInt(taskData.status),
+                        assignedToUserId: taskData.assignedToUserId,
+                        //assignedToTeamId: assignedTeam
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Task created successfully!');
+                        window.location.href = '/dashboard.html';
+                    }
+                });
+            }
+
+            // Function to update an existing task
+            function updateTask(id, taskData) {
+                fetch(`/api/task/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: taskData.title,
+                        description: taskData.description,
+                        dueDate: taskData.dueDate,
+                        priority: parseInt(taskData.priority),
+                        status: parseInt(taskData.status),
+                        assignedToUserId: taskData.assignedToUserId,
+                        //assignedToTeamId: assignedTeam
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Task Updated successfully!');
+                        window.location.href = '/dashboard.html';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
